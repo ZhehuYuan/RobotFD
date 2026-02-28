@@ -17,6 +17,7 @@ This repository provides an implementation of the system described in the submit
 Plain text, one point per line:
 - 2D: `x,y`
 - 3D: `x,y,z`
+Delimiter: comma
 ---
 
 ## How to Call the Function
@@ -48,4 +49,5 @@ Curve c1(txtLoaderX("trajectory 1 filename"), X); // X is the number of dimensio
 Curve c2(txtLoaderX("trajectroy 2 filename"), X);
 compute_distance_parallel(c1, c2);
 ```
+
 

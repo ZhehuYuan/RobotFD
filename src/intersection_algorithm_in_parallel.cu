@@ -130,7 +130,7 @@ Cuda_intersection::Cuda_intersection(const Curve& curve1, const Curve& curve2, b
 		}
 
         //Copy Data into device memory
-        
+        oversize = * forceOversize;
         goto NoError;
 
         Error:
@@ -166,6 +166,12 @@ void Cuda_intersection::free_memory(){
 	cudaFree(marker);
 	cudaFree(dev_result);
 	cudaFree(dev_bound_next_round);
+	if(oversize){
+		cudaFree(interval_topLB);
+		cudaFree(interval_topUB);
+		cudaFree(interval_rightLB);
+		cudaFree(interval_rightUB);
+	}
 }
 
 __global__ void VEFD_init(
@@ -1388,8 +1394,7 @@ void Cuda_intersection::Bound_call_gpu(
 
 
 bool Cuda_intersection::intersection_interval_call_gpu(
-    double radius,
-	bool forceOversize
+    double radius
 ){
 	using namespace std::chrono;
 
@@ -1421,7 +1426,7 @@ bool Cuda_intersection::intersection_interval_call_gpu(
     }
 	auto start = std::chrono::high_resolution_clock::now();
 	if(point_dimensions == 3) {
-		if(forceOversize){
+		if(oversize){
 			start = std::chrono::high_resolution_clock::now();
 			reachable<3><<<n_block, min((curve1_size + n_block - 1)/n_block, n_thread_per_block), n_thread_per_block * 6 * sizeof(double)>>>(
 		    	marker,
@@ -1491,7 +1496,7 @@ bool Cuda_intersection::intersection_interval_call_gpu(
     		}
 		}
 	}else if(point_dimensions == 2) {
-		if(forceOversize){
+		if(oversize){
 			reachable<2><<<n_block, min((curve1_size + n_block - 1)/n_block, n_thread_per_block), n_thread_per_block * 6 * sizeof(double)>>>(
 				marker,
     	    	dev_bound_next_round,

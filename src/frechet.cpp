@@ -45,7 +45,7 @@ double distance_cuda(const Curve &curve1, const Curve &curve2, const double eps,
 				printf("\tSplit: %f\n", split);
 			#endif
 				iter ++;
-				auto isLessThan = cuda.intersection_interval_call_gpu(split, forceOversize);
+				auto isLessThan = cuda.intersection_interval_call_gpu(split);
 				if (isLessThan) {
 					ub = split;
 				}
@@ -70,6 +70,7 @@ double distance_cuda(const Curve &curve1, const Curve &curve2, const double eps,
 	printf("Reachability Time: %f ms\n", cuda.reachTime);
 	printf("Total Time: %f ms\n", std::chrono::duration_cast<std::chrono::microseconds>(end2 - start).count() / 1000.0);
 	result = value;
+	cuda.free_memory();
 	return result;
 }
 

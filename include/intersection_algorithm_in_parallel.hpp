@@ -18,8 +18,7 @@ class Cuda_intersection{
             double radius
         ); 
         bool intersection_interval_call_gpu( 
-            double radius,
-			bool forceOversize
+            double radius
         );
         
 		void Bound_call_gpu(
@@ -33,7 +32,7 @@ class Cuda_intersection{
 
 		int curve1_size;
 		int curve2_size;
-		bool first;
+		bool oversize;
 
         double * dev_points_curve1_p;
         double * dev_points_curve2_p;

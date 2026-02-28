@@ -11,7 +11,7 @@ This repository provides an implementation of the system described in the submit
 ### Software
 - OS: Linux (Ubuntu 20.04/22.04 recommended)
 - CUDA Toolkit: 12.3
-- C++ compiler: g++ >= 9。4.0
+- C++ compiler: g++ >= 9.4.0
 
 ### Trajectory format
 Plain text, one point per line:
@@ -48,3 +48,4 @@ Curve c1(txtLoaderX("trajectory 1 filename"), X); // X is the number of dimensio
 Curve c2(txtLoaderX("trajectroy 2 filename"), X);
 compute_distance_parallel(c1, c2);
 ```
+

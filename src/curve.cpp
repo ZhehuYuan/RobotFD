@@ -17,14 +17,3 @@ void Curve::push_back(Point const& point)
 	points.push_back(point);
 }
 
-std::ostream& operator<<(std::ostream& out, const Curve& curve)
-{
-    out << "[";
-	for (auto const& point: curve) {
-		out << point << ", ";
-	}
-    out << "]";
-
-    return out;
-}
-

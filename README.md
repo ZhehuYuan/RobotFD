@@ -35,3 +35,16 @@ To run:
 ``` 
 
 ### Option B: Call via C++ function
+
+To use the code with function call, the following headers should be included:
+```cpp
+#include "include/txtReader.hpp" // to read trajectory files
+#include "include/wrapper.hpp" // to compute FD
+```
+
+To compute FD between two trajectories, the following code should be used:
+```cpp
+Curve c1(txtLoaderX("trajectory 1 filename"), X); // X is the number of dimensions in the trajectory
+Curve c2(txtLoaderX("trajectroy 2 filename"), X);
+compute_distance_parallel(c1, c2);
+```

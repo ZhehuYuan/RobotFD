@@ -1340,54 +1340,56 @@ void Cuda_intersection::Bound_call_gpu(
 		printf("Init VEFD done\n");
     #endif
 	}
-	if(point_dimensions == 3){
-		VEFD<3><<<n_block, min((curve1_size + n_block - 1)/n_block, n_thread_per_block), n_thread_per_block * 6 * sizeof(double)>>>(
-			*vefd,
-			marker,
-			dev_bound_next_round,
-    		dev_points_curve1_p,
-    		dev_points_curve2_p,
-    		curve1_size,
-    		curve2_size,
-			dev_result,
-			buffer,
-			buffer_size
-		);
-	}else if(point_dimensions == 2){
-        VEFD<2><<<n_block, min((curve1_size + n_block - 1)/n_block, n_thread_per_block), n_thread_per_block * 6 * sizeof(double)>>>(
-            *vefd,
-			marker,
-            dev_bound_next_round,
-            dev_points_curve1_p,
-            dev_points_curve2_p,
-            curve1_size,
-            curve2_size,
-            dev_result,
-            buffer,
-            buffer_size
-        );
-	}
+	if(curve1_size * curve2_size > 10000){
+		if(point_dimensions == 3){
+			VEFD<3><<<n_block, min((curve1_size + n_block - 1)/n_block, n_thread_per_block), n_thread_per_block * 6 * sizeof(double)>>>(
+				*vefd,
+				marker,
+				dev_bound_next_round,
+    			dev_points_curve1_p,
+    			dev_points_curve2_p,
+    			curve1_size,
+    			curve2_size,
+				dev_result,
+				buffer,
+				buffer_size
+			);
+		}else if(point_dimensions == 2){
+        	VEFD<2><<<n_block, min((curve1_size + n_block - 1)/n_block, n_thread_per_block), n_thread_per_block * 6 * sizeof(double)>>>(
+            	*vefd,
+				marker,
+            	dev_bound_next_round,
+            	dev_points_curve1_p,
+            	dev_points_curve2_p,
+            	curve1_size,
+            	curve2_size,
+            	dev_result,
+            	buffer,
+            	buffer_size
+        	);
+		}
 	
-    cudaDeviceSynchronize();
-	err = cudaGetLastError();
-    if (err != cudaSuccess) {
-        printf("VEFD launch error: %s\n", cudaGetErrorString(err));
-    }else{
-	#if debug
-		printf("VEFD done\n");
-	#endif
-    }
+    	cudaDeviceSynchronize();
+		err = cudaGetLastError();
+    	if (err != cudaSuccess) {
+    	    printf("VEFD launch error: %s\n", cudaGetErrorString(err));
+    	}else{
+		#if debug
+			printf("VEFD done\n");
+		#endif
+    	}
 	
-    cudaStatus = cudaMemcpy(
-        &result, dev_result, sizeof(double), cudaMemcpyDeviceToHost
-    );
-	if (cudaStatus != cudaSuccess) {
-    	printf("cudaMemcpy failed: %s\n", cudaGetErrorString(cudaStatus));
-	}
+    	cudaStatus = cudaMemcpy(
+    	    &result, dev_result, sizeof(double), cudaMemcpyDeviceToHost
+    	);
+		if (cudaStatus != cudaSuccess) {
+    		printf("cudaMemcpy failed: %s\n", cudaGetErrorString(cudaStatus));
+		}
     
-	cudaDeviceSynchronize();
+		cudaDeviceSynchronize();
 
-	*vefd = result;
+		*vefd = result;
+	}
 
 	return;
 }
